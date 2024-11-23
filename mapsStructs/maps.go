@@ -1,0 +1,5 @@
+package mapsStructs
+
+func Maps() {
+
+}
