@@ -2,40 +2,43 @@ package deferPanicRecover
 
 import (
 	"fmt"
+	"net/http"
 )
 
 var panicLessons = []func(){
-	panicDivision,
-	panicWebHandler,
-	panicWithDefer,
+	// panicDivision,
+	// panicWebHandler,
+	// panicWithDefer,
 }
 
 func PanicLessons() {
 	for _, lesson := range panicLessons {
 		lesson()
+		fmt.Println("------------------------------------------------------------------")
 	}
 }
 
 func panicDivision() {
 	// runtime generates panic here
 	// panic: runtime error: integer divide by zero
-	// a, b := 1, 0
-	// ans := a / b
-	// fmt.Println(ans)
+	a, b := 1, 0
+	ans := a / b
+	fmt.Println(ans)
 }
 
 func panicWebHandler() {
+	// this will panic if you run it twice
 	// Go libraries are rarely going to panic
 	// they will give you an error and let you decide
 	// if that error is fatal in your use case.
 	// if it is, then you can decide to panic
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Write([]byte("Hello Go!"))
-	// })
-	// err := http.ListenAndServe(":8080", nil)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello Go!"))
+	})
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
 func panicWithDefer() {

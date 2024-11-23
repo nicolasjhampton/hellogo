@@ -9,13 +9,14 @@ import (
 
 var lessons = []func(){
 	deferOrder,
-	deferServer,
+	// deferServer,
 	deferVariables,
 }
 
 func DeferLessons() {
 	for _, lesson := range lessons {
 		lesson()
+		fmt.Println("------------------------------------------------------------------")
 	}
 }
 
@@ -51,7 +52,10 @@ func deferServer() {
 func deferVariables() {
 	// defer takes the value of variables at the time of deferment,
 	// not the values at the time of the function's end
+	// reminds me of a closure
 	a := "start"
 	defer fmt.Println(a)
 	a = "end"
 }
+
+ // defer statements are executed last in first out, like a stack
