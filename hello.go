@@ -6,6 +6,14 @@ import (
 	"github.com/nicolasjhampton/hellogo/deferPanicRecover"
 )
 
+func main() {
+	// previousChapters()
+	deferPanicRecover.DeferLessons()
+	deferPanicRecover.PanicLessons()
+	deferPanicRecover.RecoverLessons()
+	
+}
+
 // type Doctor struct {
 // 	number     int
 // 	actorName  string
@@ -24,7 +32,7 @@ import (
 // 	CanFly   bool
 // }
 
-func main() {
+func previousChapters() {
 	for i, j := 0, 0; i < 5; i, j = i+1, j+2 {
 		fmt.Println(i)
 		fmt.Println(j)
@@ -64,8 +72,6 @@ func main() {
 		fmt.Printf("%v: %v", k, v)
 		fmt.Println("")
 	}
-	deferPanicRecover.DeferLessons()
-	deferPanicRecover.PanicLessons()
 	// bird := map[string]string{
 	// 	"name":   "Emu",
 	// 	"origin": "Australia",
