@@ -5,6 +5,7 @@ import (
 
 	"github.com/nicolasjhampton/hellogo/deferPanicRecover"
 	"github.com/nicolasjhampton/hellogo/pointers"
+	"github.com/nicolasjhampton/hellogo/functions"
 )
 
 func main() {
@@ -14,6 +15,8 @@ func main() {
 	deferPanicRecover.RecoverLessons()
 
 	pointers.PointerLessons()
+
+	functions.FunctionLessons()
 	
 }
 
