@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-var lessons = []func(){
+var deferLessons = []func(){
 	deferOrder,
 	// deferServer,
 	deferVariables,
 }
 
 func DeferLessons() {
-	for _, lesson := range lessons {
+	for _, lesson := range deferLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")
 	}
