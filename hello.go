@@ -6,6 +6,7 @@ import (
 	"github.com/nicolasjhampton/hellogo/deferPanicRecover"
 	"github.com/nicolasjhampton/hellogo/pointers"
 	"github.com/nicolasjhampton/hellogo/functions"
+	"github.com/nicolasjhampton/hellogo/interfaces"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 	pointers.PointerLessons()
 
 	functions.FunctionLessons()
+
+	interfaces.InterfaceLessons()
 	
 }
 
