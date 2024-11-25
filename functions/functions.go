@@ -10,6 +10,8 @@ var functionLessons = []func(){
 	functionVariadicParameters,
 	functionReturn,
 	functionReturns,
+	functionAnon,
+	functionMethods,
 }
 
 func FunctionLessons() {
@@ -173,18 +175,85 @@ func functionReturns() {
     // to inform the direction of execution
 	if err != nil {
 		fmt.Println(err)
-		return
+		return // return instead of an else statement
+		// this keeps the main line of execution left
+		// justified
 	}
 	fmt.Println(c)
 }
 
 func functionAnon() {
+	// This is an anonymous function in Go
+	// similar to a closure
+	func() {
+		fmt.Println("Hello Go!")
+	}() // Notice that the function is instantly invoked
 
-}
-func functionTypes() {
+	// why use anon functions?
+	// In async scenerios, the variable on the outer scope
+	// of a function could change before a function has
+	// a chance to use it. Pulling the variable value into
+	// the inner scope of an anonymous function ensures 
+	// the value is the same
+	for i := 0; i < 5; i++ {
+		func(i int) {
+			fmt.Println(i)
+		}(i)
+	}
 
+	// also, we can assign a function to a variable and pass
+	// it like a value
+	f := func() {
+		fmt.Println("Hello Go!")
+	}
+	f()
+
+	// this function is assigned to a variable
+	// this declaration has to come before any use
+	// unlike a global func declaration
+	var divide func(float64, float64) (float64, error) // function type declaration
+	divide = func(a, b float64)(float64, error) {
+		if b == 0.0 {
+			return 0.0, fmt.Errorf("Cannot divide by zero")
+		}
+		return a / b, nil
+	}
+	d, err := divide(5.0, 0.0)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(d)
 }
+
+type greeter struct {
+	greeting string
+	name string
+}
+
+// if we use this method with a regular receiver,
+// we have access to the greeter object as a brand
+// new copy, similar to a parameter. This means
+// this method will use more memory every call,
+// and we cant change the underlying data
+// func (g greeter) greet() {
+// 	fmt.Println(g.greeting, g.name)
+// }
+
+// Making the context a reference provides us with
+// a reference reciever that doesnt make a copy of
+// the underlying data each time the method is used.
+// the pointer also allows us to modify the data on
+// the structs fields
+func (g *greeter) greet() {
+	fmt.Println(g.greeting, g.name)
+}
+
 func functionMethods() {
-
+	g := greeter{
+		greeting: "hello",
+		name: "go",
+	}
+	g.greet()
 }
 
