@@ -12,6 +12,9 @@ var interfaceLessons = []func(){
 	interfaceComposition,
 	interfaceTypeConversion,
 	interfaceConversionPanics,
+	interfaceEmpty,
+	interfaceSwitching,
+	interfaceReferenceReceiver,
 }
 
 func InterfaceLessons() {
@@ -234,3 +237,86 @@ func interfaceConversionPanics() {
 	}
 	fmt.Println(r)
 }
+
+func interfaceEmpty() {
+	// An empty interface is just that, an interface with no methods
+	// assigned to it. We can use it when we don't know enough about
+	// the type we're receiving
+	var myObj interface{} = NewBufferedWriterCloser()
+	// With this syntax, we can check if the data that's under the
+	// empty interface fulfills a particular interface. If it does,
+	// we can use that behavior accordingly and avoid a panic
+	if wc, ok := myObj.(WriterCloser); ok {
+		// In this example, if myObj is a WriterCloser, we're going to
+		// write to it, but if it's not we'll simply move on
+		wc.Write([]byte("Hello YouTube listeners, this is a test of the emergency broadcast system"))
+		wc.Close()
+	}
+	r, ok := myObj.(io.Reader)
+	if !ok {
+		// In this example, if myObj isn't a reader, that's a problem
+		// big enough to stop the execution of the current function
+		fmt.Println("Conversion failed")
+		return
+	}
+	fmt.Println(r)
+}
+
+func interfaceSwitching() {
+	// If you don't know what type a variable is, this is a way
+	// to switch on logic for each expect4ed outcome
+	var i interface{} = "0"
+	switch i.(type) { // using the "type" keyword here allows us to switch on type
+	case int:
+		fmt.Println("i is a integer")
+	case string:
+		fmt.Println("i is a string")
+	default:
+		fmt.Println("I don't know what i is")
+	}
+}
+
+type myWriterCloser struct{}
+
+// If we use a value for myWriterCloser, like...
+// var wc WriterCloser = myWriterCloser{}
+// ...and any of these methods use a reference receiver,
+// we'll get an error saying that myWriterCloser{} doesn't implement
+// the methods, because the method has a pointer receiver
+func (mwc *myWriterCloser) Write(data []byte) (int, error) {
+	return 0, nil
+}
+
+// The method set for a value type in the context of an interface
+// is all the methods with a value receiver. BUT the method
+// set for a pointer type is all the value receivers AND all
+// the pointer receivers
+func (mwc myWriterCloser) Close() error {
+	return nil
+}
+
+// So for this code to work, either all the receivers have
+// to be value receivers, or we need to implement the interface
+// with a pointer type in the code
+func interfaceReferenceReceiver() {
+	// If we used myWriterCloser{}, this code wouldn't compile
+	var wc WriterCloser = &myWriterCloser{}
+	fmt.Println(wc)
+}
+
+// Interface Best Practices
+//////////////////////////////////////////////////////////////
+// * Prefer many small interfaces as opposed to one large one
+//		* io.Writer, io.Reader, even interface{}
+// * Don't export interfaces for types that will be consumed by others
+// 		* This allows others to define custom interfaces for types
+//		  you export that fit just their needs
+// * Do export interfaces for types that you import to be used by
+// 	 your package
+// 		* accepting an interface you've defined instead of a
+//        concrete type is the best way to consume imported code
+// * Where possible, functions and methods should be designed to
+//	 receive interfaces
+// 		* This is harder to do if you depend on the underlying fields
+// 		  of a type, but if you only interact with the type's behavior
+// 		  this is perfect
