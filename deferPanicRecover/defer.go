@@ -14,6 +14,7 @@ var deferLessons = []func(){
 }
 
 func DeferLessons() {
+	fmt.Println("////////////////////////////*DEFER*////////////////////////////")
 	for _, lesson := range deferLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")

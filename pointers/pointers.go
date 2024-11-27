@@ -19,6 +19,7 @@ var pointerLessons = []func(){
 }
 
 func PointerLessons() {
+	fmt.Println("////////////////////////////*POINTERS*////////////////////////////")
 	for _, lesson := range pointerLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")

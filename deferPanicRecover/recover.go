@@ -11,6 +11,7 @@ var recoverLessons = []func(){
 }
 
 func RecoverLessons() {
+	fmt.Println("////////////////////////////*RECOVER*////////////////////////////")
 	for _, lesson := range recoverLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")

@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/nicolasjhampton/hellogo/deferPanicRecover"
-	"github.com/nicolasjhampton/hellogo/pointers"
 	"github.com/nicolasjhampton/hellogo/functions"
+	"github.com/nicolasjhampton/hellogo/goroutines"
 	"github.com/nicolasjhampton/hellogo/interfaces"
+	"github.com/nicolasjhampton/hellogo/pointers"
 )
 
 func main() {
@@ -20,7 +21,9 @@ func main() {
 	functions.FunctionLessons()
 
 	interfaces.InterfaceLessons()
-	
+
+	goroutines.GoroutineLessons()
+
 }
 
 // type Doctor struct {
