@@ -10,6 +10,8 @@ var channelLessons = []func(){
 	channelForAsync,
 	channelRestrictions,
 	channelBuffered,
+	channelRange,
+	channelCloseCheck,
 }
 
 func ChannelLessons() {
@@ -110,4 +112,53 @@ func channelBuffered() {
 	wg.Wait()
 	// if our senders were producing data faster than our receivers, the buffer
 	// would allow our receviers to become x amount of messages behind
+}
+
+func channelRange() {
+	ch := make(chan int, 1)
+	wg.Add(2)
+	go func(ch <- chan int) {
+		// This range will continue to wait for values from the channel
+		for i := range ch { // If we don't close the channel, this will wait forever, causing deadlock err
+			fmt.Println(i)
+		}
+		wg.Done()
+	}(ch)
+	go func(ch chan <- int) {
+		ch <- 42
+		// close(ch) If we close the channel early, we'll get a panic when we try to use the channel again
+		// it is not possible to check if a channel has been closed on the sending side, so be careful
+		ch <- 27 
+		close(ch) // We have to close the channel to let the range loop know to end
+		wg.Done()
+	}(ch)
+	wg.Wait()
+}
+
+func channelCloseCheck() {
+	ch := make(chan int, 1)
+	wg.Add(2)
+	go func(ch <- chan int) {
+		for {
+			// Although we can't check if a channel is closed on the sending end,
+			// we can use an if statement to check if the channel is closed from
+			// the receiving end
+			if i, ok := <- ch; ok {
+				fmt.Println(i)
+			} else {
+				// this could be useful for any final or cleanup logic
+				break
+			}
+		}
+		wg.Done()
+	}(ch)
+	go func(ch chan <- int) {
+		ch <- 42
+		// close(ch) If we close the channel early, we'll get a panic when we try to use the channel again
+		// it is not possible to check if a channel has been closed on the sending side, so be careful
+		ch <- 27 
+		close(ch) // We have to close the channel to let the range loop know to end
+		wg.Done()
+	}(ch)
+	wg.Wait()
 }
