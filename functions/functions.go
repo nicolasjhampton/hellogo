@@ -15,6 +15,7 @@ var functionLessons = []func(){
 }
 
 func FunctionLessons() {
+	fmt.Println("////////////////////////////*FUNCTIONS*////////////////////////////")
 	for _, lesson := range functionLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")

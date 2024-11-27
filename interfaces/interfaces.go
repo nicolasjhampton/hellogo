@@ -18,6 +18,7 @@ var interfaceLessons = []func(){
 }
 
 func InterfaceLessons() {
+	fmt.Println("////////////////////////////*INTERFACES*////////////////////////////")
 	for _, lesson := range interfaceLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")

@@ -12,6 +12,7 @@ var panicLessons = []func(){
 }
 
 func PanicLessons() {
+	fmt.Println("////////////////////////////*PANIC*////////////////////////////")
 	for _, lesson := range panicLessons {
 		lesson()
 		fmt.Println("------------------------------------------------------------------")
