@@ -9,6 +9,7 @@ var channelLessons = []func(){
 	channelBasics,
 	channelForAsync,
 	channelRestrictions,
+	channelBuffered,
 }
 
 func ChannelLessons() {
@@ -41,7 +42,7 @@ func channelBasics() {
 		ch <- i // Sending data into our channel
 		i = 27
 		fmt.Println(i) // This i won't affect the value we sent in the channel
-		fmt.Println(<- ch) // for every send, we need a matching receive
+		fmt.Println(<- ch) // for every send, we need a matching receive IF THE CHANNEL IS UNBUFFERED
 		wg.Done()
 	}()
 	wg.Wait()
@@ -49,8 +50,8 @@ func channelBasics() {
 
 func channelForAsync() {
 	// We'll spawn 10 goroutines, and all of them will use this one channel
-	// Also, we've specified no buffer, so only one message can be in the
-	// channel at a time
+	// Also, we've specified no buffer, so no message can be stored in the
+	// channel waiting for a receiver
 	ch := make(chan int)
 	for j := 0; j < 5; j++ {
 		wg.Add(2)
@@ -71,6 +72,8 @@ func channelForAsync() {
 	wg.Wait()
 }
 
+// restricting data flow direction on a go channel makes it much easier
+// to reason about the program
 func channelRestrictions() {
 	ch := make(chan int)
 	wg.Add(2)
@@ -92,5 +95,19 @@ func channelRestrictions() {
 }
 
 func channelBuffered() {
-
+	ch := make(chan int, 1) // A buffer will allow x amount of messages to be held in the channel
+	wg.Add(2)
+	go func(ch <- chan int) {
+		fmt.Println(<- ch)
+		wg.Done()
+	}(ch)
+	go func(ch chan <- int) {
+		ch <- 42
+		ch <- 27 // We send two values, one is consumed by our goroutine, and one is stored in the channel
+		// this program will execute and print 42, but 27 will never print
+		wg.Done()
+	}(ch)
+	wg.Wait()
+	// if our senders were producing data faster than our receivers, the buffer
+	// would allow our receviers to become x amount of messages behind
 }
