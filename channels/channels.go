@@ -3,6 +3,7 @@ package channels
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 var channelLessons = []func(){
@@ -12,6 +13,7 @@ var channelLessons = []func(){
 	channelBuffered,
 	channelRange,
 	channelCloseCheck,
+	channelSelect,
 }
 
 func ChannelLessons() {
@@ -161,4 +163,60 @@ func channelCloseCheck() {
 		wg.Done()
 	}(ch)
 	wg.Wait()
+}
+
+const (
+	logInfo = "INFO"
+	logWarning = "WARNING"
+	logError = "ERROR"
+)
+
+type logEntry struct {
+	time time.Time
+	severity string
+	message string
+}
+
+func logger() (chan logEntry, chan struct{}) {
+	var logCh = make(chan logEntry, 50)
+	// A channel that sends blank structs with no fields
+	// Structs with no fields require 0 memory allocation in go
+	// We cant send data through this channel, but we can use
+	// it like a signal, a signal only channel
+	var doneCh = make(chan struct{})
+	go func(logCh <-chan logEntry) {
+		for {
+			// The select statement receives data from multiple channels at the
+			// same time. If both channels send at the same time, the select
+			// block executes one first randomly. The select statement is blocking
+			// unless the default case is defined. Like a switch statement for channels.
+			select {
+			case entry := <- logCh:
+				fmt.Printf("%v - [%v] %v\n", entry.time.Format("2006-01-02T15:04:05"), entry.severity, entry.message)
+			case <- doneCh:
+				break
+			}
+		}
+		// Using this syntax, we would have to use the deferred close function
+		// to ensure we close the channel at the end of the channelSelect function call
+		// for entry := range logCh {
+		// 	fmt.Printf("%v - [%v] %v\n", entry.time.Format("2006-01-02T15:04:05"), entry.severity, entry.message)
+		// }
+	}(logCh)
+	return logCh, doneCh
+}
+
+func channelSelect() {
+	logCh, doneCh := logger()
+	// This closed channel would break us out of our for loop if thats
+	// what we were using
+	// defer func() {
+	// 	close(logCh)
+	// }()
+	
+	logCh <- logEntry{time.Now(), logInfo, "App is starting"}
+
+	logCh <- logEntry{time.Now(), logInfo, "App is shutting down"}
+	time.Sleep(100 * time.Millisecond)
+	doneCh <- struct{}{} // This empty struct will break us out of the select statement
 }
