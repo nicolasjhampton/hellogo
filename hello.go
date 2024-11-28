@@ -8,6 +8,7 @@ import (
 	"github.com/nicolasjhampton/hellogo/goroutines"
 	"github.com/nicolasjhampton/hellogo/interfaces"
 	"github.com/nicolasjhampton/hellogo/pointers"
+	"github.com/nicolasjhampton/hellogo/channels"
 )
 
 func main() {
@@ -23,6 +24,8 @@ func main() {
 	interfaces.InterfaceLessons()
 
 	goroutines.GoroutineLessons()
+
+	channels.ChannelLessons()
 
 }
 
